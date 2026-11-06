@@ -35,7 +35,7 @@ echo "Downloading myserv $version for $os/$arch..."
 curl -fsSL "$base/$file" -o "$tmp/$file" || fail "download failed: $base/$file"
 curl -fsSL "$base/checksums.txt" -o "$tmp/checksums.txt" || fail "could not download checksums.txt"
 
-want=$(grep " \./$file\$\| $file\$" "$tmp/checksums.txt" | awk '{print $1}')
+want=$(grep -E " (\./)?$file$" "$tmp/checksums.txt" | awk '{print $1}')
 [ -n "$want" ] || fail "$file is not in checksums.txt"
 if command -v sha256sum >/dev/null 2>&1; then got=$(sha256sum "$tmp/$file" | awk '{print $1}'); else got=$(shasum -a 256 "$tmp/$file" | awk '{print $1}'); fi
 [ "$want" = "$got" ] || fail "checksum mismatch for $file"
